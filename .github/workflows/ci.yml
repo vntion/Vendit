@@ -10,12 +10,24 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{matrix.node-version}}
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{matrix.node-version}}
-      - name: npm install and test
-        run: |
-          npm install
-          npm run ci:test
+          node-version: "20.x"
+
+      - name: Install dependencies
+        run: npm install
+
+      # Langkah baru - Mulai server di background dan tentukan host/port yang eksplisit
+      - name: Start dev server
+        run: npm run dev -- --host 127.0.0.1 --port 5173 &
+        shell: bash
+
+      # Tunggu server siap dengan timeout yang lebih panjang
+      - name: Wait for server to be ready
+        run: npx wait-on http://127.0.0.1:5173 --timeout 60000
+
+      # Jalankan pengujian setelah server siap
+      - name: Run tests
+        run: npm run test
