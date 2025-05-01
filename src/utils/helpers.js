@@ -39,7 +39,3 @@ export function formatDate (date) {
 export function formatString (string, length) {
   return string.length > length ? `${string.slice(0, length)}...` : string
 }
-
-export function formatNumber (string, length) {
-  return string.length > length ? `${string.slice(0, length)}...` : string
-}
