@@ -16,7 +16,7 @@ function AddThreadButton() {
           className="flex items-center gap-1 rounded-md px-2 py-2 hover:cursor-pointer hover:bg-purple-600/25"
         >
           <AiFillPlusCircle className="text-2xl text-purple-500" />
-          <span className="text=sm">Buat thread</span>
+          <span className="text=sm">Tambah thread</span>
         </button>
       </Modal.Open>
 
