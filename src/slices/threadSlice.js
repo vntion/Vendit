@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import {
   createComment,
   createThread,
@@ -9,184 +9,184 @@ import {
   neutralizeComment,
   neutralizeThreadVote,
   UpVoteComment,
-  upVoteThread,
-} from "../API/apiThread";
-import { loadingComplete, startLoading } from "./loadingBarSlice";
+  upVoteThread
+} from '../API/apiThread'
+import { loadingComplete, startLoading } from './loadingBarSlice'
 
 export const fetchGetThreads = createAsyncThunk(
-  "thread/fetchGetThreads",
+  'thread/fetchGetThreads',
   async function (_, { dispatch }) {
-    dispatch(startLoading());
-    const thread = getAllThreads();
+    dispatch(startLoading())
+    const thread = getAllThreads()
 
-    dispatch(loadingComplete());
-    return thread;
-  },
-);
+    dispatch(loadingComplete())
+    return thread
+  }
+)
 
 export const fetchThreadDetailById = createAsyncThunk(
-  "thread/fetchThreadById",
+  'thread/fetchThreadById',
   async function (id, { dispatch }) {
-    dispatch(startLoading());
-    const thread = getThreadDetailById(id);
+    dispatch(startLoading())
+    const thread = getThreadDetailById(id)
 
-    dispatch(loadingComplete());
-    return thread;
-  },
-);
+    dispatch(loadingComplete())
+    return thread
+  }
+)
 
 export const fetchCreateThread = createAsyncThunk(
-  "thread/fetchCreateThread",
-  createThread,
-);
+  'thread/fetchCreateThread',
+  createThread
+)
 
 export const fetchCreateComment = createAsyncThunk(
-  "thread/fetchCreateComment",
-  createComment,
-);
+  'thread/fetchCreateComment',
+  createComment
+)
 
 export const fetchVoteThread = createAsyncThunk(
-  "thread/fetchVoteThread",
+  'thread/fetchVoteThread',
   async function (data, { getState, dispatch }) {
     const {
-      user: { loggedUser },
-    } = getState();
+      user: { loggedUser }
+    } = getState()
 
-    let vote;
+    let vote
 
-    if (data.voteType === "upVote") {
+    if (data.voteType === 'upVote') {
       dispatch(
         threadSlice.actions.optimisticVote({
           threadId: data.id,
           userId: loggedUser.id,
           type: data.fetchType,
-          voteType: 1,
-        }),
-      );
-      vote = await upVoteThread(data.id);
+          voteType: 1
+        })
+      )
+      vote = await upVoteThread(data.id)
     }
 
-    if (data.voteType === "downVote") {
+    if (data.voteType === 'downVote') {
       dispatch(
         threadSlice.actions.optimisticVote({
           threadId: data.id,
           userId: loggedUser.id,
           type: data.fetchType,
-          voteType: -1,
-        }),
-      );
-      vote = await downVoteThread(data.id);
+          voteType: -1
+        })
+      )
+      vote = await downVoteThread(data.id)
     }
 
-    if (data.voteType === "neutral") {
+    if (data.voteType === 'neutral') {
       dispatch(
         threadSlice.actions.optimisticVote({
           threadId: data.id,
           userId: loggedUser.id,
           type: data.fetchType,
-          voteType: 0,
-        }),
-      );
-      vote = await neutralizeThreadVote(data.id);
+          voteType: 0
+        })
+      )
+      vote = await neutralizeThreadVote(data.id)
     }
 
-    return { vote, fetchType: data.fetchType };
-  },
-);
+    return { vote, fetchType: data.fetchType }
+  }
+)
 
 export const fetchVoteComment = createAsyncThunk(
-  "thread/fetchVoteComment",
+  'thread/fetchVoteComment',
   async function (data, { getState, dispatch }) {
     const {
-      user: { loggedUser },
-    } = getState();
-    let vote;
+      user: { loggedUser }
+    } = getState()
+    let vote
 
-    if (data.voteType === "upVote") {
+    if (data.voteType === 'upVote') {
       dispatch(
         threadSlice.actions.optimisticVote({
           threadId: data.id,
           userId: loggedUser.id,
           commentId: data.commentId,
           type: data.fetchType,
-          voteType: 1,
-        }),
-      );
-      vote = await UpVoteComment(data.id, data.commentId);
+          voteType: 1
+        })
+      )
+      vote = await UpVoteComment(data.id, data.commentId)
     }
 
-    if (data.voteType === "downVote") {
+    if (data.voteType === 'downVote') {
       dispatch(
         threadSlice.actions.optimisticVote({
           threadId: data.id,
           userId: loggedUser.id,
           commentId: data.commentId,
           type: data.fetchType,
-          voteType: -1,
-        }),
-      );
-      vote = await downVoteComment(data.id, data.commentId);
+          voteType: -1
+        })
+      )
+      vote = await downVoteComment(data.id, data.commentId)
     }
 
-    if (data.voteType === "neutral") {
+    if (data.voteType === 'neutral') {
       dispatch(
         threadSlice.actions.optimisticVote({
           threadId: data.id,
           userId: loggedUser.id,
           commentId: data.commentId,
           type: data.fetchType,
-          voteType: 0,
-        }),
-      );
-      vote = await neutralizeComment(data.id, data.commentId);
+          voteType: 0
+        })
+      )
+      vote = await neutralizeComment(data.id, data.commentId)
     }
 
-    return { vote };
-  },
-);
+    return { vote }
+  }
+)
 
 const initialState = {
   threads: [],
   threadDetail: null,
-  category: "",
-  status: "idle",
-  error: "",
-};
+  category: '',
+  status: 'idle',
+  error: ''
+}
 
 const threadSlice = createSlice({
-  name: "thread",
+  name: 'thread',
   initialState,
   reducers: {
-    changeCategory(state, action) {
+    changeCategory (state, action) {
       // payload = category
-      state.category = action.payload;
+      state.category = action.payload
     },
-    optimisticVote(state, action) {
-      const { threadId, commentId, userId, type, voteType } = action.payload;
-      if (type === "threadDetail") {
+    optimisticVote (state, action) {
+      const { threadId, commentId, userId, type, voteType } = action.payload
+      if (type === 'threadDetail') {
         if (voteType === 1) {
-          state.threadDetail.upVotesBy.push(userId);
+          state.threadDetail.upVotesBy.push(userId)
           state.threadDetail.downVotesBy = [
-            ...state.threadDetail.downVotesBy.filter((id) => id !== userId),
-          ];
+            ...state.threadDetail.downVotesBy.filter((id) => id !== userId)
+          ]
         }
         if (voteType === -1) {
-          state.threadDetail.downVotesBy.push(userId);
+          state.threadDetail.downVotesBy.push(userId)
           state.threadDetail.upVotesBy = [
-            ...state.threadDetail.upVotesBy.filter((id) => id !== userId),
-          ];
+            ...state.threadDetail.upVotesBy.filter((id) => id !== userId)
+          ]
         }
         if (voteType === 0) {
           state.threadDetail.downVotesBy = [
-            ...state.threadDetail.downVotesBy.filter((id) => id !== userId),
-          ];
+            ...state.threadDetail.downVotesBy.filter((id) => id !== userId)
+          ]
           state.threadDetail.upVotesBy = [
-            ...state.threadDetail.upVotesBy.filter((id) => id !== userId),
-          ];
+            ...state.threadDetail.upVotesBy.filter((id) => id !== userId)
+          ]
         }
       }
 
-      if (type === "threadItem") {
+      if (type === 'threadItem') {
         if (voteType === 1) {
           state.threads = state.threads.map((thread) =>
             thread.id === threadId
@@ -194,11 +194,11 @@ const threadSlice = createSlice({
                   ...thread,
                   upVotesBy: [...thread.upVotesBy, userId],
                   downVotesBy: [
-                    ...thread.downVotesBy.filter((item) => item !== userId),
-                  ],
+                    ...thread.downVotesBy.filter((item) => item !== userId)
+                  ]
                 }
-              : thread,
-          );
+              : thread
+          )
         }
         if (voteType === -1) {
           state.threads = state.threads.map((thread) =>
@@ -207,11 +207,11 @@ const threadSlice = createSlice({
                   ...thread,
                   downVotesBy: [...thread.downVotesBy, userId],
                   upVotesBy: [
-                    ...thread.upVotesBy.filter((item) => item !== userId),
-                  ],
+                    ...thread.upVotesBy.filter((item) => item !== userId)
+                  ]
                 }
-              : thread,
-          );
+              : thread
+          )
         }
         if (voteType === 0) {
           state.threads = state.threads.map((thread) =>
@@ -219,18 +219,18 @@ const threadSlice = createSlice({
               ? {
                   ...thread,
                   downVotesBy: [
-                    ...thread.downVotesBy.filter((item) => item !== userId),
+                    ...thread.downVotesBy.filter((item) => item !== userId)
                   ],
                   upVotesBy: [
-                    ...thread.upVotesBy.filter((item) => item !== userId),
-                  ],
+                    ...thread.upVotesBy.filter((item) => item !== userId)
+                  ]
                 }
-              : thread,
-          );
+              : thread
+          )
         }
       }
 
-      if (type === "comment") {
+      if (type === 'comment') {
         if (voteType === 1) {
           state.threadDetail.comments = state.threadDetail.comments.map(
             (comment) => {
@@ -239,13 +239,13 @@ const threadSlice = createSlice({
                   ...comment,
                   upVotesBy: [...comment.upVotesBy, userId],
                   downVotesBy: comment.downVotesBy.filter(
-                    (item) => item !== userId,
-                  ),
-                };
+                    (item) => item !== userId
+                  )
+                }
               }
-              return comment;
-            },
-          );
+              return comment
+            }
+          )
         }
         if (voteType === -1) {
           state.threadDetail.comments = state.threadDetail.comments.map(
@@ -255,13 +255,13 @@ const threadSlice = createSlice({
                   ...comment,
                   downVotesBy: [...comment.downVotesBy, userId],
                   upVotesBy: comment.upVotesBy.filter(
-                    (item) => item !== userId,
-                  ),
-                };
+                    (item) => item !== userId
+                  )
+                }
               }
-              return comment;
-            },
-          );
+              return comment
+            }
+          )
         }
         if (voteType === 0) {
           state.threadDetail.comments = state.threadDetail.comments.map(
@@ -270,67 +270,67 @@ const threadSlice = createSlice({
                 return {
                   ...comment,
                   upVotesBy: comment.upVotesBy.filter(
-                    (item) => item !== userId,
+                    (item) => item !== userId
                   ),
                   downVotesBy: comment.downVotesBy.filter(
-                    (item) => item !== userId,
-                  ),
-                };
+                    (item) => item !== userId
+                  )
+                }
               }
-              return comment;
-            },
-          );
+              return comment
+            }
+          )
         }
       }
-    },
+    }
   },
   extraReducers: (builder) =>
     builder
       /// //// Get all thread
       .addCase(fetchGetThreads.fulfilled, (state, action) => {
-        state.status = "idle";
-        state.threads = action.payload;
+        state.status = 'idle'
+        state.threads = action.payload
       })
       .addCase(fetchGetThreads.rejected, (state, action) => {
-        state.status = "error";
-        state.error = action.error.message;
+        state.status = 'error'
+        state.error = action.error.message
       })
 
       /// //// Get thread detail by id
       .addCase(fetchThreadDetailById.fulfilled, (state, action) => {
-        state.status = "idle";
-        state.threadDetail = action.payload;
+        state.status = 'idle'
+        state.threadDetail = action.payload
       })
       .addCase(fetchThreadDetailById.rejected, (state, action) => {
-        state.status = "error";
-        state.error = action.error.message;
+        state.status = 'error'
+        state.error = action.error.message
       })
 
       /// /// Create thread
       .addCase(fetchCreateThread.fulfilled, (state, action) => {
-        state.status = "idle";
-        state.threads.unshift(action.payload);
+        state.status = 'idle'
+        state.threads.unshift(action.payload)
       })
       .addCase(fetchCreateThread.rejected, (state, action) => {
-        state.status = "error";
-        state.error = action.error.message;
+        state.status = 'error'
+        state.error = action.error.message
       })
 
       /// /// Create comment
       .addCase(fetchCreateComment.fulfilled, (state, action) => {
-        state.status = "idle";
-        state.threadDetail.comments.unshift(action.payload);
+        state.status = 'idle'
+        state.threadDetail.comments.unshift(action.payload)
       })
       .addCase(fetchCreateComment.rejected, (state, action) => {
-        state.status = "error";
-        state.error = action.error.message;
+        state.status = 'error'
+        state.error = action.error.message
       })
 
       /// /// Vote thread
       .addCase(fetchVoteThread.fulfilled, (state, action) => {
-        const { vote, fetchType } = action.payload;
-        state.status = "idle";
-        if (fetchType === "threadItem") {
+        const { vote, fetchType } = action.payload
+        state.status = 'idle'
+        if (fetchType === 'threadItem') {
           if (vote.voteType === 1) {
             state.threads = state.threads.map((thread) =>
               thread.id === vote.threadId
@@ -339,12 +339,12 @@ const threadSlice = createSlice({
                     upVotesBy: [...new Set([...thread.upVotesBy, vote.userId])],
                     downVotesBy: [
                       ...thread.downVotesBy.filter(
-                        (item) => item !== vote.userId,
-                      ),
-                    ],
+                        (item) => item !== vote.userId
+                      )
+                    ]
                   }
-                : thread,
-            );
+                : thread
+            )
           }
 
           if (vote.voteType === -1) {
@@ -353,16 +353,16 @@ const threadSlice = createSlice({
                 ? {
                     ...thread,
                     downVotesBy: [
-                      ...new Set([...thread.downVotesBy, vote.userId]),
+                      ...new Set([...thread.downVotesBy, vote.userId])
                     ],
                     upVotesBy: [
                       ...thread.upVotesBy.filter(
-                        (item) => item !== vote.userId,
-                      ),
-                    ],
+                        (item) => item !== vote.userId
+                      )
+                    ]
                   }
-                : thread,
-            );
+                : thread
+            )
           }
 
           if (vote.voteType === 0) {
@@ -372,65 +372,65 @@ const threadSlice = createSlice({
                     ...thread,
                     downVotesBy: [
                       ...thread.downVotesBy.filter(
-                        (item) => item !== vote.userId,
-                      ),
+                        (item) => item !== vote.userId
+                      )
                     ],
                     upVotesBy: [
                       ...thread.upVotesBy.filter(
-                        (item) => item !== vote.userId,
-                      ),
-                    ],
+                        (item) => item !== vote.userId
+                      )
+                    ]
                   }
-                : thread,
-            );
+                : thread
+            )
           }
         }
 
-        if (fetchType === "threadDetail") {
+        if (fetchType === 'threadDetail') {
           if (vote.voteType === 1) {
             state.threadDetail.upVotesBy = [
-              ...new Set([...state.threadDetail.upVotesBy, vote.userId]),
-            ];
+              ...new Set([...state.threadDetail.upVotesBy, vote.userId])
+            ]
             state.threadDetail.downVotesBy = [
               ...state.threadDetail.downVotesBy.filter(
-                (id) => id !== vote.userId,
-              ),
-            ];
+                (id) => id !== vote.userId
+              )
+            ]
           }
 
           if (vote.voteType === -1) {
             state.threadDetail.downVotesBy = [
-              ...new Set([...state.threadDetail.downVotesBy, vote.userId]),
-            ];
+              ...new Set([...state.threadDetail.downVotesBy, vote.userId])
+            ]
             state.threadDetail.upVotesBy = [
               ...state.threadDetail.upVotesBy.filter(
-                (id) => id !== vote.userId,
-              ),
-            ];
+                (id) => id !== vote.userId
+              )
+            ]
           }
 
           if (vote.voteType === 0) {
             state.threadDetail.downVotesBy = [
               ...state.threadDetail.downVotesBy.filter(
-                (id) => id !== vote.userId,
-              ),
-            ];
+                (id) => id !== vote.userId
+              )
+            ]
             state.threadDetail.upVotesBy = [
               ...state.threadDetail.upVotesBy.filter(
-                (id) => id !== vote.userId,
-              ),
-            ];
+                (id) => id !== vote.userId
+              )
+            ]
           }
         }
       })
       .addCase(fetchVoteThread.rejected, (state, action) => {
-        state.status = "error";
-        state.error = action.error.message;
+        state.status = 'error'
+        state.error = action.error.message
       })
 
       /// /// Vote comment
       .addCase(fetchVoteComment.fulfilled, (state, action) => {
-        const { vote } = action.payload;
+        const { vote } = action.payload
         if (vote.voteType === 1) {
           state.threadDetail.comments = state.threadDetail.comments.map(
             (comment) => {
@@ -439,13 +439,13 @@ const threadSlice = createSlice({
                   ...comment,
                   upVotesBy: [...new Set([...comment.upVotesBy, vote.userId])],
                   downVotesBy: comment.downVotesBy.filter(
-                    (item) => item !== vote.userId,
-                  ),
-                };
+                    (item) => item !== vote.userId
+                  )
+                }
               }
-              return comment;
-            },
-          );
+              return comment
+            }
+          )
         }
 
         if (vote.voteType === -1) {
@@ -455,16 +455,16 @@ const threadSlice = createSlice({
                 return {
                   ...comment,
                   downVotesBy: [
-                    ...new Set([...comment.downVotesBy, vote.userId]),
+                    ...new Set([...comment.downVotesBy, vote.userId])
                   ],
                   upVotesBy: comment.upVotesBy.filter(
-                    (item) => item !== vote.userId,
-                  ),
-                };
+                    (item) => item !== vote.userId
+                  )
+                }
               }
-              return comment;
-            },
-          );
+              return comment
+            }
+          )
         }
 
         if (vote.voteType === 0) {
@@ -474,38 +474,38 @@ const threadSlice = createSlice({
                 return {
                   ...comment,
                   upVotesBy: comment.upVotesBy.filter(
-                    (item) => item !== vote.userId,
+                    (item) => item !== vote.userId
                   ),
                   downVotesBy: comment.downVotesBy.filter(
-                    (item) => item !== vote.userId,
-                  ),
-                };
+                    (item) => item !== vote.userId
+                  )
+                }
               }
-              return comment;
-            },
-          );
+              return comment
+            }
+          )
         }
-        state.status = "idle";
+        state.status = 'idle'
       })
       .addCase(fetchVoteComment.rejected, (state, action) => {
-        state.status = "error";
-        state.error = action.error.message;
-      }),
-});
+        state.status = 'error'
+        state.error = action.error.message
+      })
+})
 
-export const { changeCategory } = threadSlice.actions;
+export const { changeCategory } = threadSlice.actions
 
-export default threadSlice.reducer;
+export default threadSlice.reducer
 
 // export const getThreadByCategory = (state) =>
 //   state.thread.threads.filter((thread) =>
 //     thread.category.includes(state.thread.category),
 //   );
 export const getThreadByCategory = (state) => {
-  const threads = state.thread.threads;
-  const category = state.thread.category;
+  const threads = state.thread.threads
+  const category = state.thread.category
   const filteredThreadsByCategory = threads.filter((thread) =>
-    thread.category.includes(category),
-  );
-  return filteredThreadsByCategory;
-};
+    thread.category.includes(category)
+  )
+  return filteredThreadsByCategory
+}

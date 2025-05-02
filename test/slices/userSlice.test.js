@@ -1,5 +1,5 @@
-import userReducer, { logout } from "../../src/slices/userSlice";
-import { describe, expect, it } from "vitest";
+import userReducer, { logout } from '../../src/slices/userSlice'
+import { describe, expect, it } from 'vitest'
 
 /**
  * skenario tes userReducer
@@ -9,36 +9,36 @@ import { describe, expect, it } from "vitest";
  * - should return the loggedUser to null when given by logout action
  */
 
-describe("userReducer", () => {
-  it("should return the initial state when given by unknown action", () => {
+describe('userReducer', () => {
+  it('should return the initial state when given by unknown action', () => {
     const initialState = {
       users: [],
       loggedUser: null,
-      status: "idle",
-      error: "",
-    };
-    const unknownAction = { type: "UNKNOWN_ACTION" };
+      status: 'idle',
+      error: ''
+    }
+    const unknownAction = { type: 'UNKNOWN_ACTION' }
 
-    const nextState = userReducer(initialState, unknownAction);
+    const nextState = userReducer(initialState, unknownAction)
 
-    expect(nextState).toEqual(initialState);
-  });
+    expect(nextState).toEqual(initialState)
+  })
 
-  it("should return the loggedUser to null when given by logout action", () => {
+  it('should return the loggedUser to null when given by logout action', () => {
     const initialState = {
       users: [],
       loggedUser: {
-        id: "user123",
-        name: "testuser",
-        email: "test@gmail.com",
-        avatar: "https://generated-image-url.jpg",
+        id: 'user123',
+        name: 'testuser',
+        email: 'test@gmail.com',
+        avatar: 'https://generated-image-url.jpg'
       },
-      status: "idle",
-      error: "",
-    };
-    const action = logout();
+      status: 'idle',
+      error: ''
+    }
+    const action = logout()
 
-    const nextState = userReducer(initialState, action);
-    expect(nextState.loggedUser).toBe(null);
-  });
-});
+    const nextState = userReducer(initialState, action)
+    expect(nextState.loggedUser).toBe(null)
+  })
+})
