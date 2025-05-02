@@ -1,5 +1,5 @@
-function Logo () {
-  return <div className='text-4xl'>Vendit</div>
+function Logo() {
+  return <div className="text-4xl">Gendit</div>;
 }
 
-export default Logo
+export default Logo;
